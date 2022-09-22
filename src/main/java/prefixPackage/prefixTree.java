@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Stack;
 
 public class prefixTree {
-
     private final prefixTreeNode root = new prefixTreeNode(' ');
 
     public void add(String word){
