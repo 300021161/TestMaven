@@ -23,6 +23,8 @@ public class prefixTree {
     private class prefixTreeNode {
         private final char value;
 
+        private boolean flag = true;
+
         ArrayList<prefixTreeNode> children;
 
         private prefixTreeNode(char val) {
@@ -52,24 +54,42 @@ public class prefixTree {
 
         private boolean check(String word){
             prefixTreeNode nodeNow = root;
+            boolean b = true;
+            for(char c : word.toCharArray()){
+                prefixTreeNode nodeCheck = null;
+                for(prefixTreeNode node : nodeNow.children){
+                    if(node.value == c){
+                        if(!node.flag) b = false;
+                        else b = true;
+                        nodeCheck = node;
+                        break;
+                    }
+                }
+                if(nodeCheck == null&&!b){
+                    return false;
+                }
+                nodeNow = nodeCheck;
+            }
+            if(b) return true;
+            else return false;
+        }
+
+        private void delete(String word){
+            prefixTreeNode nodeNow = root;
             for(char c : word.toCharArray()){
                 prefixTreeNode nodeCheck = null;
                 for(prefixTreeNode node : nodeNow.children){
                     if(node.value == c){
                         nodeCheck = node;
+                        node.flag = false;
                         break;
                     }
                 }
                 if(nodeCheck == null){
-                    return false;
+                    return;
                 }
                 nodeNow = nodeCheck;
             }
-            return true;
-        }
-
-        private void delete(String word){
-
         }
 
     }
