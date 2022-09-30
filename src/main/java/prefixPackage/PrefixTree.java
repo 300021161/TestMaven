@@ -10,7 +10,7 @@ public class PrefixTree {
     }
 
     public boolean check(String word){
-        return root.check(word);
+        return root.getNode(word) != null;
     }
 
     public String getMeaning(String key){
@@ -56,64 +56,37 @@ public class PrefixTree {
             pf.add(key.substring(1), meaning);
         }
 
-        private String getMeaning(String key){
-            PrefixTreeNode nodeNow = root;
-            char[] chars = key.toCharArray();
+        private PrefixTreeNode getNode(String word){ // node null добавить исключение для null для полей которые не должны быть null
+            PrefixTreeNode nodeNow = root;     // unit test
+            char[] chars = word.toCharArray();
             for (int i = 0; i < chars.length; i++) {
-                PrefixTreeNode nodeCheck = null;
                 char c = chars[i];
+                PrefixTreeNode nodeCheck = null;
                 if(nodeNow.children == null) return null;
                 for (PrefixTreeNode node : nodeNow.children) {
                     if (node.key == c) {
                         nodeCheck = node;
-                        if(i == chars.length-1) return nodeCheck.meaning;
+                        if(i == chars.length-1 && nodeCheck.meaning!=null) return nodeCheck;
                         break;
                     }
+                }
+                if (nodeCheck == null) {
+                    return null;
                 }
                 nodeNow = nodeCheck;
             }
             return null;
         }
 
-        private boolean check(String word){  // возвращать узел
-            PrefixTreeNode nodeNow = root;     // unit test
-            char[] chars = word.toCharArray();
-            for (int i = 0; i < chars.length; i++) {
-                char c = chars[i];
-                PrefixTreeNode nodeCheck = null;
-                for (PrefixTreeNode node : nodeNow.children) {
-                    if (node.key == c) {
-                        nodeCheck = node;
-                        if(i == chars.length-1 && nodeCheck.meaning!=null) return true;
-                        break;
-                    }
-                }
-                if (nodeCheck == null) {
-                    return false;
-                }
-                nodeNow = nodeCheck;
-            }
-            return false;
+        private void delete(String word) {
+            PrefixTreeNode node = getNode(word);
+            if(node!=null) node.meaning = null;
         }
 
-        private void delete(String word) {
-            PrefixTreeNode nodeNow = root;
-            char[] chars = word.toCharArray();
-            for (int i = 0; i < chars.length; i++) {
-                char c = chars[i];
-                PrefixTreeNode nodeCheck = null;
-                for (PrefixTreeNode node : nodeNow.children) {
-                    if (node.key == c) {
-                        nodeCheck = node;
-                        if(i == chars.length-1) nodeCheck.meaning = null;
-                        break;
-                    }
-                }
-                if (nodeCheck == null) {
-                    return;
-                }
-                nodeNow = nodeCheck;
-            }
+        private String getMeaning(String key){
+            PrefixTreeNode node = getNode(key);
+            if(node!=null) return node.meaning;
+            else return null;
         }
     }
 }
